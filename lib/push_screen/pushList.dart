@@ -20,7 +20,7 @@ class _PushScreenState extends State<PushScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
+        appBar: AppBar(
         backgroundColor: Color(0xff32506a),
         title: Text('Мои уведомления')
       ),
@@ -49,7 +49,7 @@ class _PushScreenState extends State<PushScreen> {
               ),
               alignment: Alignment(0.0, 0.0),
               child: Icon(
-                  Icons.info_outline,
+                Icons.info_outline,
                 color: Colors.white,
                 size: 32.0,
               ),
