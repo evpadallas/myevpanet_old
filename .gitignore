@@ -37,19 +37,4 @@ lib/generated_plugin_registrant.dart
 # Exceptions to above rules.
 !/packages/flutter_tools/test/data/dart_dependencies_test/**/.packages
 *.lock
-android/.gradle/5.6.2/executionHistory/executionHistory.bin
-android/.gradle/5.6.2/executionHistory/executionHistory.lock
-android/.gradle/5.6.2/fileHashes/fileHashes.bin
-android/.gradle/5.6.2/fileHashes/fileHashes.lock
-android/.gradle/buildOutputCleanup/buildOutputCleanup.lock
-android/.gradle/5.6.2/fileHashes/fileHashes.lock
-android/.gradle/5.6.2/fileContent/fileContent.lock
-android/.gradle/buildOutputCleanup/buildOutputCleanup.lock
-android/.gradle/5.6.2/fileContent/fileContent.lock
-android/.gradle/5.6.2/executionHistory/executionHistory.lock
-android/.gradle/5.6.2/executionHistory/executionHistory.lock
-android/.gradle/5.6.2/fileContent/fileContent.lock
-android/.gradle/5.6.2/fileHashes/fileHashes.bin
-android/.gradle/5.6.2/fileHashes/fileHashes.lock
-android/.gradle/buildOutputCleanup/buildOutputCleanup.lock
-android/.gradle/5.6.2/executionHistory/executionHistory.bin
+

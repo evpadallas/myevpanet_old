@@ -15,14 +15,15 @@ class SetupGroup extends StatefulWidget {
   @override
   SetupGroupWidget createState() => SetupGroupWidget();
 }
-Map initialTarif;
+
 class SetupGroupWidget extends State {
+
   bool autoState = users[currentGuidIndex]['auto_activation'] == 1 ? true : false;
   bool parentState = users[currentGuidIndex]['flag_parent_control'] == 1 ? true : false;
   String text = '';
   double _currentDays = 1;
+  int daysRemain = DateTime.parse(users[currentGuidIndex]["packet_end_utc"]).toUtc().difference(DateTime.now().toUtc()).inDays;
   String daysText = 'день';
-  //String text = '';
   String phoneToCall = '+79780489664';
 
   @override
@@ -36,129 +37,10 @@ class SetupGroupWidget extends State {
     ));
   }
 
-  void onSetupAutoChange(value) async{
-    String answer = await RestAPI().switchChangePUT('activation', guids[currentGuidIndex], devKey);
-    setState(
-      () {
-        if (answer.startsWith('is')) {
-          users[currentGuidIndex]['auto_activation'] = value ? '0' : '1';
-        } else {
-          users[currentGuidIndex]['auto_activation'] = answer;
-        }
-        userInfo = users[currentGuidIndex];
-      }
-    );
-  }
-
-  void onSetupParentChange(bool value) async{
-    String answer = await RestAPI().switchChangePUT('parent', guids[currentGuidIndex], devKey);
-    setState(
-      () {
-        if (answer.startsWith('is')) {
-          users[currentGuidIndex]['flag_parent_control'] = value ? '0' : '1';
-        } else {
-          users[currentGuidIndex]['flag_parent_control'] = answer;
-        }
-      userInfo = users[currentGuidIndex];
-      }
-    );
-  }
-
-  // это можно вынести в отдельный файл
-  /*
-  * Вызов модального окна с сообщением в ремонты
-  * */
-  void _showModalSupport() async{
-    return showGeneralDialog(
-        context: context,
-        barrierDismissible: true,
-        barrierLabel: MaterialLocalizations.of(context).modalBarrierDismissLabel,
-        barrierColor: Color(0xff2c4860),
-        transitionDuration: const Duration(milliseconds: 200),
-        pageBuilder: (BuildContext buildContext, Animation animation, Animation secondaryAnimation) {
-          return Dialog(
-            backgroundColor: Colors.transparent,
-            child: SupportMessageModal()
-          );
-        }
-    );
-  }
-  /*
-  *  Вызов модального окна для совершения звонка
-  * */
-  void _showModalCallSupport() async{
-    return showGeneralDialog(
-        context: context,
-        barrierDismissible: true,
-        barrierLabel: MaterialLocalizations.of(context).modalBarrierDismissLabel,
-        barrierColor: Color(0xff2c4860),
-        transitionDuration: const Duration(milliseconds: 200),
-        pageBuilder: (BuildContext buildContext, Animation animation, Animation secondaryAnimation) {
-          return Dialog(
-            backgroundColor: Colors.transparent,
-            child: CallWindowModal()
-          );
-        }
-    );
-  }
-
-
-  void onAddDaysButtonPressed() async {
-    String answer = await RestAPI().addDaysPUT(_currentDays.round(), guids[currentGuidIndex], devKey);
-    if (!answer.startsWith('is')) {
-      var decode = json.decode(answer);
-      print(decode);
-      users[currentGuidIndex]['extra_account'] = decode['message']['extra_account'].toString();
-      users[currentGuidIndex]['packet_secs'] = decode['message']['packet_secs'];
-      userInfo = users[currentGuidIndex];
-      setState(() {});
-      //refreshKey.currentState?.setState(() { });
-    }
-  }
-
-  final double appBarHeight = 66.0;
-
-  List<Widget> _list1() {
-    List<Widget> tList = [];
-    tList.add(
-      SwitchListTile(
-        activeColor: Color(0xff3e6282),
-        dense: true,
-        value: users[currentGuidIndex]['auto_activation'] == '1' ? true : false,
-        title: Text('Автоактивация пакета'),
-        onChanged: (bool state) {onSetupAutoChange(state);},
-      )
-    );
-    tList.add(
-      SwitchListTile(
-        activeColor: Color(0xff3e6282),
-        dense: true,
-        value: users[currentGuidIndex]['flag_parent_control'] == '1' ? true : false,
-        title: Text('Родительский контроль'),
-        onChanged: (bool state) {onSetupParentChange(state);},
-      )
-    );
-    return tList;
-  }
-
-  // доступные тарифные планы
-  List<Widget> _list() {
-    List<Widget> tList = [];
-      tList.add(
-          RadioGroup()
-      );
-    return tList;
-  }
-
 
   @override
   Widget build(BuildContext context) {
-
-    final double statusBarHeight = MediaQuery
-        .of(context)
-        .padding
-        .top;
-
+    final double statusBarHeight = MediaQuery.of(context).padding.top;
     return Container(
       child: Scaffold(
         body: CustomScrollView(
@@ -544,6 +426,7 @@ class SetupGroupWidget extends State {
                               ),
                               child: Text('Стоимость одного дня - ${users[currentGuidIndex]['days_price']} руб.'),
                             ),
+                            Text('Текущее количество дней: $daysRemain'),
                             users[currentGuidIndex]['max_days'] > 0 ?
                                 Column(
                                   children: <Widget>[
@@ -618,4 +501,117 @@ class SetupGroupWidget extends State {
      ),
    );
   }
+
+  void onAddDaysButtonPressed() async {
+    String answer = await RestAPI().addDaysPUT(_currentDays.round(), guids[currentGuidIndex], devKey);
+    if (!answer.startsWith('is')) {
+      var decode = json.decode(answer);
+      print(decode);
+      var result = await RestAPI().userDataGet(guids[currentGuidIndex], devKey);
+      //users[currentGuidIndex]['extra_account'] = decode['message']['extra_account'].toString();
+      //users[currentGuidIndex]['packet_secs'] = decode['message']['packet_secs'];
+      userInfo = users[currentGuidIndex];
+      setState(() {daysRemain += _currentDays.round();});
+    }
+  }
+  void onSetupAutoChange(value) async{
+    String answer = await RestAPI().switchChangePUT('activation', guids[currentGuidIndex], devKey);
+    setState(
+      () {
+        if (answer.startsWith('is')) {
+          users[currentGuidIndex]['auto_activation'] = value ? '0' : '1';
+        } else {
+          users[currentGuidIndex]['auto_activation'] = answer;
+        }
+        userInfo = users[currentGuidIndex];
+      }
+    );
+  }
+
+  void onSetupParentChange(bool value) async{
+    String answer = await RestAPI().switchChangePUT('parent', guids[currentGuidIndex], devKey);
+    setState(
+      () {
+        if (answer.startsWith('is')) {
+          users[currentGuidIndex]['flag_parent_control'] = value ? '0' : '1';
+        } else {
+          users[currentGuidIndex]['flag_parent_control'] = answer;
+        }
+      userInfo = users[currentGuidIndex];
+      }
+    );
+  }
+
+  // это можно вынести в отдельный файл
+  /*
+  * Вызов модального окна с сообщением в ремонты
+  * */
+  void _showModalSupport() async{
+    return showGeneralDialog(
+        context: context,
+        barrierDismissible: true,
+        barrierLabel: MaterialLocalizations.of(context).modalBarrierDismissLabel,
+        barrierColor: Color(0xff2c4860),
+        transitionDuration: const Duration(milliseconds: 200),
+        pageBuilder: (BuildContext buildContext, Animation animation, Animation secondaryAnimation) {
+          return Dialog(
+            backgroundColor: Colors.transparent,
+            child: SupportMessageModal()
+          );
+        }
+    );
+  }
+  /*
+  *  Вызов модального окна для совершения звонка
+  * */
+  void _showModalCallSupport() async{
+    return showGeneralDialog(
+        context: context,
+        barrierDismissible: true,
+        barrierLabel: MaterialLocalizations.of(context).modalBarrierDismissLabel,
+        barrierColor: Color(0xff2c4860),
+        transitionDuration: const Duration(milliseconds: 200),
+        pageBuilder: (BuildContext buildContext, Animation animation, Animation secondaryAnimation) {
+          return Dialog(
+            backgroundColor: Colors.transparent,
+            child: CallWindowModal()
+          );
+        }
+    );
+  }
+
+  final double appBarHeight = 66.0;
+
+  List<Widget> _list1() {
+    List<Widget> tList = [];
+    tList.add(
+      SwitchListTile(
+        activeColor: Color(0xff3e6282),
+        dense: true,
+        value: users[currentGuidIndex]['auto_activation'] == '1' ? true : false,
+        title: Text('Автоактивация пакета'),
+        onChanged: (bool state) {onSetupAutoChange(state);},
+      )
+    );
+    tList.add(
+      SwitchListTile(
+        activeColor: Color(0xff3e6282),
+        dense: true,
+        value: users[currentGuidIndex]['flag_parent_control'] == '1' ? true : false,
+        title: Text('Родительский контроль'),
+        onChanged: (bool state) {onSetupParentChange(state);},
+      )
+    );
+    return tList;
+  }
+
+  // доступные тарифные планы
+  List<Widget> _list() {
+    List<Widget> tList = [];
+      tList.add(
+          RadioGroup()
+      );
+    return tList;
+  }
+
 }

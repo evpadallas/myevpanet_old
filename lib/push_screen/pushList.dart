@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+//import 'package:flutter/services.dart';
 import '../main.dart';
+//import 'package:shared_preferences/shared_preferences.dart';
 
 class PushScreen extends StatefulWidget {
 
@@ -26,13 +28,29 @@ class _PushScreenState extends State<PushScreen> {
       ),
       body: ListView(
         children: listRows()
-      )
+      ),
+      /*bottomSheet: FlatButton(
+        onPressed: () async{
+          Clipboard.setData(
+            ClipboardData(
+              text: devKey.toString()
+            )
+          );
+          //final shared = await SharedPreferences.getInstance();
+          //sharedPushes.add(devKey.toString());
+          //shared.setStringList('pushes', sharedPushes);
+        },
+        child: Text('Скопировать ключ в память'),
+      )*/
     );
   }
 
   List<Widget> listRows() {
     List<Widget> _list = [];
     //print('Reading content of pushes.dat');
+    /*for (var item in sharedPushes) {
+      _list.add(Text(item));
+    }*/
     for (var _push in pushes) {
       //print(_push);
       _list.add(

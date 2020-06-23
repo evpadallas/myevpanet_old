@@ -5,10 +5,11 @@ import 'package:myevpanet/splash_screen/splash_widget.dart';
 int verbose = 1;
 List guids = [];
 List pushes = [];
+List<String> sharedPushes = [];
 String devKey;
 int currentGuidIndex = 0;
 Map userInfo;
-bool useNewApiVersion = true;
+//bool useNewApiVersion = true;
 var users = Map();
 FirebaseHelper fbHelper;
 int messageForId = 0;
@@ -20,6 +21,7 @@ String registrationMode = 'new';
 void main() {
   runApp(App());
 }
+
 //
 class App extends StatelessWidget {
 

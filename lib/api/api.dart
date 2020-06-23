@@ -6,6 +6,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:myevpanet/main.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class FileStorage {
   String filename;
@@ -79,9 +80,12 @@ class Pushes {
         _toSave['body'] = lastMessage['data']['message'].toString();
       }
     }
-    final _file = await FileStorage('pushes.dat').localFile;
-    _file.writeAsString('${json.encode(_toSave)}\n', mode: FileMode.append);
+    //final _file = await FileStorage('pushes.dat').localFile;
+    //_file.writeAsString('${json.encode(_toSave)}\n', mode: FileMode.append);
     pushes.add(_toSave);
+    sharedPushes.add(jsonEncode(_toSave));
+    final shared = await SharedPreferences.getInstance();
+    shared.setStringList('pushes', sharedPushes);
   }
   int parsePushForId(String source) {
     if (source != 'null') {
