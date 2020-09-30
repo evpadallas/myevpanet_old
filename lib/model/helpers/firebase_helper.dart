@@ -1,22 +1,20 @@
 import 'dart:io';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
-import 'package:myevpanet/api/api.dart';
+import 'package:myevpanet/domain/api/api.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:myevpanet/main.dart';
 
-class FirebaseHelper{
-
-
+class FirebaseHelper {
   //final Firestore _db = Firestore.instance;
   final FirebaseMessaging _fcm = FirebaseMessaging();
 
-  FirebaseHelper(){
+  FirebaseHelper() {
     _init();
   }
 
-  void _init(){
-    if(Platform.isIOS){
+  void _init() {
+    if (Platform.isIOS) {
       _fcm.requestNotificationPermissions(IosNotificationSettings());
     }
     configure();
@@ -29,16 +27,17 @@ class FirebaseHelper{
         lastMessage = message;
         await Pushes().savePushToFile('onMessage');
         lastMessageIsSeen = false;
-        messageForId = Pushes().parsePushForId(message['notification']['title'].toString());
+        messageForId = Pushes()
+            .parsePushForId(message['notification']['title'].toString());
         Fluttertoast.showToast(
-          msg: '${message['notification']['title']} : ${message['notification']['body']}',
-          toastLength: Toast.LENGTH_SHORT,
-          gravity: ToastGravity.BOTTOM,
-          timeInSecForIosWeb: 2,
-          backgroundColor: Colors.green,
-          textColor: Colors.white,
-          fontSize: 16.0
-        );
+            msg:
+                '${message['notification']['title']} : ${message['notification']['body']}',
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.BOTTOM,
+            timeInSecForIosWeb: 2,
+            backgroundColor: Colors.green,
+            textColor: Colors.white,
+            fontSize: 16.0);
         //сохраняем полученную пушку в файл
       },
       onLaunch: (Map<String, dynamic> message) async {
@@ -53,21 +52,20 @@ class FirebaseHelper{
         lastMessage = message;
         lastMessageIsSeen = false;
         Fluttertoast.showToast(
-          msg: '${message['data']['title']} : ${message['data']['message']}',
-          toastLength: Toast.LENGTH_SHORT,
-          gravity: ToastGravity.BOTTOM,
-          timeInSecForIosWeb: 2,
-          backgroundColor: Colors.green,
-          textColor: Colors.white,
-          fontSize: 16.0
-        );
+            msg: '${message['data']['title']} : ${message['data']['message']}',
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.BOTTOM,
+            timeInSecForIosWeb: 2,
+            backgroundColor: Colors.green,
+            textColor: Colors.white,
+            fontSize: 16.0);
         Pushes().savePushToFile('onResume');
         // optional
       },
     );
   }
 
-  Future<String> getAppToken() async{
+  Future<String> getAppToken() async {
     return await _fcm.getToken();
   }
 

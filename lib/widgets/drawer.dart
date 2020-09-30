@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:myevpanet/login_screen/login_widget.dart';
+import 'package:myevpanet/ui/login_screen/login_widget.dart';
 import 'package:myevpanet/main.dart';
 
 class AppDrawer extends StatelessWidget {

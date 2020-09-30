@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 //import 'package:flutter/services.dart';
-import '../main.dart';
+import '../../main.dart';
 //import 'package:shared_preferences/shared_preferences.dart';
 
 class PushScreen extends StatefulWidget {
-
   PushScreen({Key key, this.title}) : super(key: key);
   final String title;
 
@@ -13,7 +12,6 @@ class PushScreen extends StatefulWidget {
 }
 
 class _PushScreenState extends State<PushScreen> {
-
   @override
   void initState() {
     super.initState();
@@ -22,13 +20,9 @@ class _PushScreenState extends State<PushScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-        backgroundColor: Color(0xff32506a),
-        title: Text('Мои уведомления')
-      ),
-      body: ListView(
-        children: listRows()
-      ),
+      appBar: AppBar(
+          backgroundColor: Color(0xff32506a), title: Text('Мои уведомления')),
+      body: ListView(children: listRows()),
       /*bottomSheet: FlatButton(
         onPressed: () async{
           Clipboard.setData(
@@ -55,16 +49,11 @@ class _PushScreenState extends State<PushScreen> {
       //print(_push);
       _list.add(
         Padding(
-          padding: EdgeInsets.only(
-            left: 16.0,
-            right: 16.0
-          ),
+          padding: EdgeInsets.only(left: 16.0, right: 16.0),
           child: CustomListItemTwo(
             thumbnail: Container(
               decoration: const BoxDecoration(
-                  color: Color(0xff42617e),
-                  shape: BoxShape.circle
-              ),
+                  color: Color(0xff42617e), shape: BoxShape.circle),
               alignment: Alignment(0.0, 0.0),
               child: Icon(
                 Icons.info_outline,
@@ -79,15 +68,11 @@ class _PushScreenState extends State<PushScreen> {
             //readDuration: '12 mins',
           ),
         ),
-
-
-
       );
       _list.add(Divider());
     }
     return _list;
   }
-
 }
 
 class CustomListItemTwo extends StatelessWidget {
@@ -171,9 +156,7 @@ class _ArticleDescription extends StatelessWidget {
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
                 style: const TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 16.0
-                ),
+                    fontWeight: FontWeight.bold, fontSize: 16.0),
               ),
               const Padding(padding: EdgeInsets.only(bottom: 2.0)),
               Text(
