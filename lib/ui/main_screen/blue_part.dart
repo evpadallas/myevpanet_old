@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:myevpanet/domain/api/api.dart';
+import 'package:myevpanet/model/api/api.dart';
 import 'package:myevpanet/main.dart';
 import 'package:myevpanet/ui/main_screen/radio.dart';
 import 'package:myevpanet/ui/main_screen/setups.dart';

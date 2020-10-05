@@ -2,12 +2,12 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_icons/flutter_icons.dart';
-import 'package:myevpanet/model/helpers/DesignHelper.dart';
+import 'package:myevpanet/model/helpers/design_helper.dart';
 import 'package:myevpanet/ui/push_screen/pushList.dart';
 import 'package:myevpanet/ui/webview_screens/pay_widget.dart';
 import 'package:responsive_flutter/responsive_flutter.dart';
 import 'package:intl/intl.dart';
-import 'package:myevpanet/domain/api/api.dart';
+import 'package:myevpanet/model/api/api.dart';
 import 'package:myevpanet/main.dart';
 import 'package:myevpanet/ui/main_screen/radio.dart';
 

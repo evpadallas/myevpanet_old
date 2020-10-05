@@ -7,7 +7,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:myevpanet/main.dart';
 import 'package:myevpanet/ui/main_screen/main_widget.dart';
 import 'package:responsive_flutter/responsive_flutter.dart';
-import 'package:myevpanet/domain/api/api.dart';
+import 'package:myevpanet/model/api/api.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:flutter/services.dart';
 import 'package:myevpanet/ui/webview_screens/order_widget.dart';

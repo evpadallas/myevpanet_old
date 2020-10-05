@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:myevpanet/model/helpers/firebase_helper.dart';
 import 'package:myevpanet/main.dart';
 import 'dart:io';
-import 'package:myevpanet/domain/api/api.dart';
+import 'package:myevpanet/model/api/api.dart';
 import 'package:myevpanet/ui/main_screen/main_widget.dart';
 import 'package:myevpanet/ui/login_screen/login_widget.dart';
 import 'package:flutter/services.dart';

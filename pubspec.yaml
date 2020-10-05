@@ -21,6 +21,8 @@ dependencies:
     sdk: flutter
   flutter_localizations:
     sdk: flutter
+  dependencies:
+  dio: ^3.0.10
   path_provider:
   flutter_svg:
   mask_text_input_formatter:

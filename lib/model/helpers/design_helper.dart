@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:myevpanet/main.dart';
 import 'package:responsive_flutter/responsive_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:myevpanet/domain/api/api.dart';
+import 'package:myevpanet/model/api/api.dart';
 
 class CircleButton extends StatelessWidget {
   final GestureTapCallback onTap;
