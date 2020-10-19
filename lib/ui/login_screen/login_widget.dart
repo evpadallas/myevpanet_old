@@ -1,16 +1,13 @@
-import 'dart:convert';
-import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:myevpanet/main.dart';
-import 'package:myevpanet/ui/main_screen/main_widget.dart';
-import 'package:responsive_flutter/responsive_flutter.dart';
-import 'package:myevpanet/model/api/api.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
+import 'package:myevpanet/main.dart';
+import 'package:myevpanet/ui/login_screen/login_bloc.dart';
 import 'package:myevpanet/ui/webview_screens/order_widget.dart';
+import 'package:responsive_flutter/responsive_flutter.dart';
 
 class LoginWidget extends StatefulWidget {
   @override
@@ -18,6 +15,14 @@ class LoginWidget extends StatefulWidget {
 }
 
 class LoginWidgetState extends State with SingleTickerProviderStateMixin {
+  var phone = new MaskTextInputFormatter(
+      mask: '+# (###) ###-##-##', filter: {"#": RegExp(r'[0-9]')});
+  var uid = new MaskTextInputFormatter(
+      mask: '#####', filter: {"#": RegExp(r'[0-9]')});
+
+  LoginBloc _bloc;
+  final String assetName = 'assets/images/evpanet_auth_logo.svg';
+
   @override
   void initState() {
     super.initState();
@@ -28,180 +33,110 @@ class LoginWidgetState extends State with SingleTickerProviderStateMixin {
     ]);
   }
 
-  final String assetName = 'assets/images/evpanet_auth_logo.svg';
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    _bloc = LoginBloc(LoginState(), context);
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomPadding: false,
-      body: Stack(
-        fit: StackFit.expand,
-        children: <Widget>[
-          Container(
-            decoration: BoxDecoration(
-                gradient: LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                    colors: [Color(0xff11273c), Color(0xff3c5d7c)])),
-            child: Center(
-              child: SingleChildScrollView(
-                child: ConstrainedBox(
-                  constraints: BoxConstraints(
-                      maxHeight: MediaQuery.of(context).size.height),
-                  child: Container(
-                    padding: EdgeInsets.only(
-                      top: ResponsiveFlutter.of(context).verticalScale(20),
-                    ),
-                    height: ResponsiveFlutter.of(context).verticalScale(600),
-                    width: ResponsiveFlutter.of(context).scale(300),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: <Widget>[
-                        _buildLogoTop(),
-                        _buildPhoneField(),
-                        _buildUIDField(),
-                        _buildSubmitButton(),
-                        Padding(
-                          padding: EdgeInsets.symmetric(
-                              horizontal: 10.0, vertical: 5.0),
-                          child: LinearProgressIndicator(
-                              value: currentGuidIndex /
-                                  (guids.isNotEmpty ? guids.length : 1),
-                              backgroundColor: Color(0xff3c5d7c),
-                              valueColor:
-                                  AlwaysStoppedAnimation<Color>(Colors.white)),
-                        ),
-                        Container(
+      body: BlocBuilder<LoginBloc, LoginState>(
+          cubit: _bloc,
+          builder: (context, state) {
+            return Stack(
+              fit: StackFit.expand,
+              children: <Widget>[
+                Container(
+                  decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                          colors: [Color(0xff11273c), Color(0xff3c5d7c)])),
+                  child: Center(
+                    child: SingleChildScrollView(
+                      child: ConstrainedBox(
+                        constraints: BoxConstraints(
+                            maxHeight: MediaQuery.of(context).size.height),
+                        child: Container(
                           padding: EdgeInsets.only(
-                            top: ResponsiveFlutter.of(context).moderateScale(8),
-                            bottom:
-                                ResponsiveFlutter.of(context).moderateScale(8),
+                            top:
+                                ResponsiveFlutter.of(context).verticalScale(20),
                           ),
-                          child: Row(children: <Widget>[
-                            Expanded(
-                              child: new Container(
-                                  margin: const EdgeInsets.only(
-                                      left: 10.0, right: 15.0),
-                                  child: Divider(
-                                    color: Color(0xffd3edff),
-                                    height: 50,
-                                  )),
-                            ),
-                            Text(
-                              "или",
-                              style: TextStyle(
-                                  color: Color(0xffd3edff),
-                                  fontSize: ResponsiveFlutter.of(context)
-                                      .fontSize(1.5)),
-                            ),
-                            Expanded(
-                              child: new Container(
-                                  margin: const EdgeInsets.only(
-                                      left: 15.0, right: 10.0),
-                                  child: Divider(
-                                    color: Color(0xffd3edff),
-                                    height: 50,
-                                  )),
-                            ),
-                          ]),
+                          height:
+                              ResponsiveFlutter.of(context).verticalScale(600),
+                          width: ResponsiveFlutter.of(context).scale(300),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: <Widget>[
+                              _buildLogoTop(),
+                              _buildPhoneField(),
+                              _buildUIDField(),
+                              _buildSubmitButton(state.registrationMode),
+                              Padding(
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: 10.0, vertical: 5.0),
+                                child: LinearProgressIndicator(
+                                  value: currentGuidIndex /
+                                      (state.guid.isNotEmpty
+                                          ? state.guid.length
+                                          : 1),
+                                  backgroundColor: Color(0xff3c5d7c),
+                                  valueColor: AlwaysStoppedAnimation<Color>(
+                                      Colors.white),
+                                ),
+                              ),
+                              Container(
+                                padding: EdgeInsets.only(
+                                  top: ResponsiveFlutter.of(context)
+                                      .moderateScale(8),
+                                  bottom: ResponsiveFlutter.of(context)
+                                      .moderateScale(8),
+                                ),
+                                child: Row(children: <Widget>[
+                                  Expanded(
+                                    child: new Container(
+                                        margin: const EdgeInsets.only(
+                                            left: 10.0, right: 15.0),
+                                        child: Divider(
+                                          color: Color(0xffd3edff),
+                                          height: 50,
+                                        )),
+                                  ),
+                                  Text(
+                                    "или",
+                                    style: TextStyle(
+                                        color: Color(0xffd3edff),
+                                        fontSize: ResponsiveFlutter.of(context)
+                                            .fontSize(1.5)),
+                                  ),
+                                  Expanded(
+                                    child: new Container(
+                                        margin: const EdgeInsets.only(
+                                            left: 15.0, right: 10.0),
+                                        child: Divider(
+                                          color: Color(0xffd3edff),
+                                          height: 50,
+                                        )),
+                                  ),
+                                ]),
+                              ),
+                              _buildConnectRequestButton(),
+                            ],
+                          ),
+                          alignment: Alignment(0.0, 0.0),
                         ),
-                        _buildConnectRequestButton(),
-                      ],
+                      ),
                     ),
-                    alignment: Alignment(0.0, 0.0),
                   ),
                 ),
-              ),
-            ),
-          ),
-        ],
-      ),
+              ],
+            );
+          }),
     );
-  }
-
-  void authButtonPressed() async {
-    SystemChannels.textInput.invokeMethod('TextInput.hide');
-    var _phoneNumber = phone.getUnmaskedText();
-    var _userID = 0;
-    if (uid.getUnmaskedText() != '') {
-      _userID = int.parse(uid.getUnmaskedText());
-    }
-
-    if (_phoneNumber.length == 11 && _userID > 0) {
-      //номер телефона достаточной длины и ИД тоже корректный можно идти дальше
-      var phone = int.parse(_phoneNumber);
-      var id = _userID;
-      if (verbose >= 1) print('Entered phone number is: $phone');
-      if (verbose >= 1) print('Entered ID is: $id');
-
-      //requesting auth from server
-      Map<String, String> result =
-          await RestAPI().authorizeUserPOST('+' + phone.toString(), id, devKey);
-
-      //обработка ответа сервера
-      bool _checks = true;
-      if (result['answer'] == 'isFull') {
-        var _body = json.decode(result['body']);
-        if (verbose >= 1) print(_body);
-        if (!_body['error']) {
-          //ошибок нет. в ответе лежат гуиды
-          if (registrationMode == 'new') {
-            guids = _body['message']['guids'];
-          } else {
-            //здесь надо к списку гуидов добавить еще гуиды без повторений
-            for (var addGuid in _body['message']['guids']) {
-              if (!guids.contains(addGuid)) guids.add(addGuid);
-            }
-            registrationMode = 'new';
-          }
-        } else {
-          //в ответе есть ошибка и ее значение выводим
-          _checks = false;
-          if (verbose >= 1) print('Got Error: ${_body['message']}');
-          Fluttertoast.showToast(
-              msg: "Абонент(ов) с такими данными не найдено",
-              toastLength: Toast.LENGTH_SHORT,
-              gravity: ToastGravity.CENTER,
-              timeInSecForIosWeb: 1,
-              backgroundColor: Colors.red,
-              textColor: Colors.white,
-              fontSize: 16.0);
-        }
-      } else {
-        //ответ был не получен из-за ошибки сети
-        _checks = false;
-        if (verbose >= 1) print('network error :(');
-      }
-      if (_checks) {
-        if (verbose >= 1) print('Got good GUID(s)');
-        //fbHelper.saveDeviceToken(result);
-        //сохранение списка гуидов в файл
-        if (verbose >= 1) print(guids);
-        final _guidsfile = await FileStorage('guidlist.dat').localFile;
-        _guidsfile.writeAsString(jsonEncode(guids),
-            mode: FileMode.write, encoding: utf8);
-        currentGuidIndex = 0;
-        //запрашиваем сервер данные всех пользователей и сохраняем (обновляем) файлы
-        for (var guid in guids) {
-          var usersRequest = await RestAPI().userDataGet(guid, devKey);
-          if (verbose >= 1) print('$guid: $usersRequest');
-          currentGuidIndex++;
-          setState(() {});
-        }
-        currentGuidIndex = 0;
-        Navigator.of(context).pushReplacement(MaterialPageRoute(
-            builder: (BuildContext context) => MainScreenWidget()));
-      }
-    } else {
-      Fluttertoast.showToast(
-          msg: "Введены некорректные данные",
-          toastLength: Toast.LENGTH_SHORT,
-          gravity: ToastGravity.CENTER,
-          timeInSecForIosWeb: 1,
-          backgroundColor: Colors.red,
-          textColor: Colors.white,
-          fontSize: 16.0);
-    }
   }
 
   Widget _buildLogoTop() {
@@ -218,11 +153,6 @@ class LoginWidgetState extends State with SingleTickerProviderStateMixin {
               color: Color(0xffd3edff),
             )));
   }
-
-  var phone = new MaskTextInputFormatter(
-      mask: '+# (###) ###-##-##', filter: {"#": RegExp(r'[0-9]')});
-  var uid = new MaskTextInputFormatter(
-      mask: '#####', filter: {"#": RegExp(r'[0-9]')});
 
   Widget _buildPhoneField() {
     return Padding(
@@ -274,7 +204,7 @@ class LoginWidgetState extends State with SingleTickerProviderStateMixin {
         ));
   }
 
-  Widget _buildSubmitButton() {
+  Widget _buildSubmitButton(String registraionMode) {
     return Padding(
       padding: EdgeInsets.only(
         top: ResponsiveFlutter.of(context).moderateScale(20),
@@ -286,7 +216,12 @@ class LoginWidgetState extends State with SingleTickerProviderStateMixin {
         shape:
             RoundedRectangleBorder(side: BorderSide(color: Color(0xff95abbf))),
         elevation: 0.0,
-        onPressed: devKey != null ? authButtonPressed : null,
+        onPressed: devKey != null
+            ? () {
+                _bloc.add(AuthButtonPressedEvent(
+                    phone.getUnmaskedText(), uid.getUnmaskedText()));
+              }
+            : null,
         color: Color(0x858eaac2),
         child: Padding(
           padding:
@@ -295,7 +230,7 @@ class LoginWidgetState extends State with SingleTickerProviderStateMixin {
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               Text(
-                getAuthButtonPressed(),
+                getAuthButtonPressed(registraionMode),
                 style: TextStyle(
                   fontSize: ResponsiveFlutter.of(context).fontSize(2),
                   fontWeight: FontWeight.w700,
@@ -313,7 +248,7 @@ class LoginWidgetState extends State with SingleTickerProviderStateMixin {
     );
   }
 
-  String getAuthButtonPressed() {
+  String getAuthButtonPressed(String registraionMode) {
     if (devKey == null) return 'Нет доступа к интернету ';
     switch (registrationMode) {
       case 'new':
@@ -339,9 +274,7 @@ class LoginWidgetState extends State with SingleTickerProviderStateMixin {
         elevation: 0.0,
         onPressed: devKey != null
             ? () {
-                // Тут колбасим открытие новой страницы с возможностью оставить заявку на подключение (Используем новый API).
-                Navigator.of(context).push(MaterialPageRoute(
-                    builder: (BuildContext context) => OrderView()));
+                _bloc.add(NavigateToOrderView());
               }
             : null,
         color: Color(0x408eaac2),
