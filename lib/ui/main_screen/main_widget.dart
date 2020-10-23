@@ -1,6 +1,5 @@
 import 'dart:ui';
 import 'package:myevpanet/model/helpers/design_helper.dart';
-//import 'package:myevpanet/payment_screen/paymaster.dart';
 import 'package:myevpanet/ui/push_screen/pushList.dart';
 import 'package:myevpanet/ui/webview_screens/pay_widget.dart';
 import 'package:myevpanet/ui/widgets/drawer.dart';
@@ -138,16 +137,12 @@ class _MainScreenWidgetState extends State<MainScreenWidget> {
           Container(
             child: CarouselSlider(
               items: idList(),
-              autoPlay: false,
-              enlargeCenterPage: true,
-              aspectRatio: 16 / 10,
-              viewportFraction: 0.85,
-              onPageChanged: (index) {
-                currentGuidIndex = index;
-                userInfo = users[currentGuidIndex];
-                _current = index;
-                setState(() {});
-              },
+              options: CarouselOptions(
+                autoPlay: false,
+                enlargeCenterPage: true,
+                aspectRatio: 16 / 10,
+                viewportFraction: 0.85,
+              ),
             ),
           ),
           // навигационные точечки

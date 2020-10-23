@@ -6,7 +6,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'package:myevpanet/main.dart';
 import 'package:myevpanet/ui/login_screen/login_bloc.dart';
-import 'package:myevpanet/ui/webview_screens/order_widget.dart';
+//import 'package:myevpanet/ui/webview_screens/order_widget.dart';
 import 'package:responsive_flutter/responsive_flutter.dart';
 
 class LoginWidget extends StatefulWidget {
@@ -16,9 +16,13 @@ class LoginWidget extends StatefulWidget {
 
 class LoginWidgetState extends State with SingleTickerProviderStateMixin {
   var phone = new MaskTextInputFormatter(
-      mask: '+# (###) ###-##-##', filter: {"#": RegExp(r'[0-9]')});
+    mask: '+# (###) ###-##-##',
+    filter: {"#": RegExp(r'[0-9]')},
+  );
   var uid = new MaskTextInputFormatter(
-      mask: '#####', filter: {"#": RegExp(r'[0-9]')});
+    mask: '#####',
+    filter: {"#": RegExp(r'[0-9]')},
+  );
 
   LoginBloc _bloc;
   final String assetName = 'assets/images/evpanet_auth_logo.svg';
